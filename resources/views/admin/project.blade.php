@@ -15,11 +15,12 @@
   <div class="card-body">
 
 
-    <div class="row">
+    <div class="table-responsive">
       <div class="col-12">
         <table class="table display" id="projectTable">
           <thead>
             <tr>
+              <th>Category</th>
               <th>Project</th>
               <th>Team</th>
               <th>Lokasi</th>
@@ -27,6 +28,7 @@
               <th>Mulai</th>
               <th>Selesai</th>
               <th>Fee (Rp)</th>
+              <th>Pengeluaran (Rp)</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -54,6 +56,18 @@
 
       <div class="modal-body">
         <form method="post" id="addForm">
+
+          <div class="form-group">
+            <label>Kategori Project</label>
+            <select name="category" class="form-control" id="addProjectCat">
+              <option value="" selected="">-</option>
+              <option value="studi_kelayakan">Studi Kelayakan</option>
+              <option value="riset_pasar">Riset Pasar</option>
+              <option value="pelatihan">Pelatihan</option>
+              <option value="pengawasan">Pengawasan</option>
+            </select>
+            <p class="invalid-feedback add-category"></p>
+          </div>
 
           <div class="form-group">
             <label>Nama Project</label>
@@ -102,6 +116,14 @@
             <p class="invalid-feedback add-fee"></p>
           </div>
 
+          <label>Pengeluaran Project</label>
+          <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">Rp</span>
+            <input type="number" name="pengeluaran" class="form-control" id="addProjectPengeluaran">
+            <br/>
+            <p class="invalid-feedback add-pengeluaran"></p>
+          </div>
+
           <br/>
           <input type="submit" class="btn btn-primary" value="Add new Project">
 
@@ -135,6 +157,17 @@
         <form method="post" id="editForm">
 
           <input type="hidden" id="editID">
+
+          <div class="form-group">
+            <label>Kategori Project</label>
+            <select name="category" class="form-control" id="editProjectCat">
+              <option value="studi_kelayakan">Studi Kelayakan</option>
+              <option value="riset_pasar">Riset Pasar</option>
+              <option value="pelatihan">Pelatihan</option>
+              <option value="pengawasan">Pengawasan</option>
+            </select>
+            <p class="invalid-feedback edit-category"></p>
+          </div>
 
           <div class="form-group">
             <label>Nama Project</label>
@@ -183,6 +216,14 @@
             <p class="invalid-feedback edit-fee"></p>
           </div>
 
+          <label>Pengeluaran Project</label>
+          <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">Rp</span>
+            <input type="number" name="pengeluaran" class="form-control" id="editProjectPengeluaran">
+            <br/>
+            <p class="invalid-feedback edit-pengeluaran"></p>
+          </div>
+
           <br/>
           <input type="submit" class="btn btn-primary" value="Edit Project">
 
@@ -202,14 +243,29 @@
 @endsection
 
 @section('script')
+
+<?php
+  $url = request()->fullUrl();
+  if (strpos($url, 'deadline')) {
+    $projectUrl = url('admin/project-json') . '?status=deadline';
+  } else if (strpos($url, 'running')) {
+    $projectUrl = url('admin/project-json') . '?status=running';
+  } else if (strpos($url, 'finish')) {
+    $projectUrl = url('admin/project-json') . '?status=finish';
+  } else {
+    $projectUrl = url('admin/project-json');
+  }
+?>
+
 <script>
 $(document).ready(function () {
 
   $('#projectTable').DataTable({
     processing: true,
     serverSide: true,
-    ajax: "{{ url('admin/project-json') }}",
+    ajax: "{{ $projectUrl }}",
     columns: [
+      {data: 'category', name: 'category'},
       {data: 'project', name: 'project'},
       {data: 'team', name: 'team'},
       {data: 'lokasi', name: 'lokasi'},
@@ -217,6 +273,7 @@ $(document).ready(function () {
       {data: 'mulai', name: 'mulai'},
       {data: 'selesai', name: 'selesai'},
       {data: 'fee', name: 'fee'},
+      {data: 'pengeluaran', name: 'pengeluaran'},
       {data: 'action', name: 'action'},
     ]
   });
@@ -224,16 +281,21 @@ $(document).ready(function () {
   $('#addProject').click(function () {
     $('#addForm').trigger('reset');
 
+    $('#addProjectCat').removeClass('is-invalid');
     $('#addProjectName').removeClass('is-invalid');
     $('#addProjectLokasi').removeClass('is-invalid');
     $('#addProjectMulai').removeClass('is-invalid');
     $('#addProjectSelesai').removeClass('is-invalid');
     $('#addProjectFee').removeClass('is-invalid');
+    $('#addProjectPengeluaran').removeClass('is-invalid');
+
+    $('.invalid-feedback.add-category').empty();
     $('.invalid-feedback.add-project').empty();
     $('.invalid-feedback.add-lokasi').empty();
     $('.invalid-feedback.add-mulai').empty();
     $('.invalid-feedback.add-selesai').empty();
     $('.invalid-feedback.add-fee').empty();
+    $('.invalid-feedback.add-pengeluaran').empty();
   });
 
   $('#addTeamBtn').on('click', function (event) {
@@ -278,6 +340,7 @@ $(document).ready(function () {
       dataType: 'JSON',
       data: {
         method: '_STORE',
+        category: $('#addProjectCat').val(),
         project: $('#addProjectName').val(),
         team_array: $('#addTeamArray').val(),
         lokasi: $('#addProjectLokasi').val(),
@@ -285,10 +348,19 @@ $(document).ready(function () {
         mulai: $('#addProjectMulai').val(),
         selesai: $('#addProjectSelesai').val(),
         fee: $('#addProjectFee').val(),
+        pengeluaran: $('#addProjectPengeluaran').val(),
       },
       success: function (data) {
         if (data.errors) {
           console.log(data.errors);
+
+          if (data.errors.category) {
+            $('#addProjectCat').addClass('is-invalid');
+            $('.invalid-feedback.add-category').text(data.errors.category);
+          } else {
+            $('#addProjectCat').removeClass('is-invalid');
+            $('.invalid-feedback.add-category').empty();
+          }
 
           if (data.errors.team_array) {
             $('#addTeam').addClass('is-invalid');
@@ -336,6 +408,14 @@ $(document).ready(function () {
             $('.invalid-feedback.add-fee').empty();
           }
 
+          if (data.errors.pengeluaran) {
+            $('#addProjectPengeluaran').addClass('is-invalid');
+            $('.invalid-feedback.add-pengeluaran').text(data.errors.pengeluaran);
+          } else {
+            $('#addProjectPengeluaran').removeClass('is-invalid');
+            $('.invalid-feedback.add-pengeluaran').empty();
+          }
+
         } else {
           toastr.success('Project berhasil ditambahkan');
           $('#addModal').modal('hide');
@@ -358,12 +438,14 @@ $(document).ready(function () {
       },
       success: function (data) {
         $('#editID').val(data.project.id);
+        $('#editProjectCat').val(data.project.category);
         $('#editProjectName').val(data.project.project);
         $('#editProjectLokasi').val(data.project.lokasi);
         $('#editProjectKeterangan').val(data.project.keterangan);
         $('#editProjectMulai').val(data.project.mulai);
         $('#editProjectSelesai').val(data.project.selesai);
         $('#editProjectFee').val(data.project.fee);
+        $('#editProjectPengeluaran').val(data.project.pengeluaran);
 
         $('#editTeamList').html(data.team);
       }
@@ -387,6 +469,7 @@ $(document).ready(function () {
       data: {
         method: '_UPDATE',
         id: $('#editID').val(),
+        category: $('#editProjectCat').val(),
         team_array: $('#editTeamArray').val(),
         project: $('#editProjectName').val(),
         lokasi: $('#editProjectLokasi').val(),
@@ -394,10 +477,19 @@ $(document).ready(function () {
         mulai: $('#editProjectMulai').val(),
         selesai: $('#editProjectSelesai').val(),
         fee: $('#editProjectFee').val(),
+        pengeluaran: $('#editProjectPengeluaran').val(),
       },
       success: function (data) {
         if (data.errors) {
           console.log(data.errors);
+
+          if (data.errors.category) {
+            $('#editProjectCat').addClass('is-invalid');
+            $('.invalid-feedback.edit-category').text(data.errors.category);
+          } else {
+            $('#editProjectCat').removeClass('is-invalid');
+            $('.invalid-feedback.edit-category').empty();
+          }
 
           if (data.errors.team_array) {
             $('#editTeam').addClass('is-invalid');
@@ -442,8 +534,17 @@ $(document).ready(function () {
             $('.invalid-feedback.edit-fee').text(data.errors.fee);
           } else {
             $('#editProjectFee').removeClass('is-invalid');
-            $('.invalid-feedback.add-fee').empty();
+            $('.invalid-feedback.edit-fee').empty();
           }
+
+          if (data.errors.pengeluaran) {
+            $('#editProjectPengeluaran').addClass('is-invalid');
+            $('.invalid-feedback.edit-pengeluaran').text(data.errors.pengeluaran);
+          } else {
+            $('#editProjectPengeluaran').removeClass('is-invalid');
+            $('.invalid-feedback.edit-pengeluaran').empty();
+          }
+
         } else {
           toastr.success('Data berhasil diperbarui');
           $('#editModal').modal('hide');

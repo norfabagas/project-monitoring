@@ -37,7 +37,7 @@
             <span class="nav-link-text">Dashboard</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Project">
           <a class="nav-link" href="{{ url('admin/project') }}">
             <i class="fa fa-fw fa-area-chart"></i>
             <span class="nav-link-text">Project</span>

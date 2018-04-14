@@ -31,7 +31,7 @@
         </div>
         <div class="mr-5">{{ $running }} Project berjalan</div>
       </div>
-      <a class="card-footer text-white clearfix small z-1" href="#">
+      <a class="card-footer text-white clearfix small z-1" href="{{ url('admin/project') }}?status=running">
         <span class="float-left">View Details</span>
         <span class="float-right">
           <i class="fa fa-angle-right"></i>
@@ -47,7 +47,7 @@
         </div>
         <div class="mr-5">{{ $finish }} Projects Selesai</div>
       </div>
-      <a class="card-footer text-white clearfix small z-1" href="#">
+      <a class="card-footer text-white clearfix small z-1" href="{{ url('admin/project') }}?status=finish">
         <span class="float-left">View Details</span>
         <span class="float-right">
           <i class="fa fa-angle-right"></i>
@@ -63,7 +63,7 @@
         </div>
         <div class="mr-5">{{ $deadline }} Projects mendekati deadline</div>
       </div>
-      <a class="card-footer text-white clearfix small z-1" href="#">
+      <a class="card-footer text-white clearfix small z-1" href="{{ url('admin/project') }}?status=deadline">
         <span class="float-left">View Details</span>
         <span class="float-right">
           <i class="fa fa-angle-right"></i>
@@ -76,44 +76,32 @@
 <!-- Area Chart Example-->
 <div class="card mb-3">
   <div class="card-header">
-    <i class="fa fa-area-chart"></i> Area Chart Example</div>
+    <i class="fa fa-area-chart"></i> Revenue Area Chart {{ date('Y') }}</div>
   <div class="card-body">
     <canvas id="myAreaChart" width="100%" height="30"></canvas>
   </div>
-  <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
 </div>
 
-<!-- Area Chart Example-->
-      <div class="card mb-3">
-        <div class="card-header">
-          <i class="fa fa-area-chart"></i> Area Chart Example</div>
-        <div class="card-body">
-          <canvas id="myAreaChart" width="100%" height="30"></canvas>
-        </div>
-        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-      </div>
 
       <div class="row">
               <div class="col-lg-8">
                 <!-- Example Bar Chart Card-->
                 <div class="card mb-3">
                   <div class="card-header">
-                    <i class="fa fa-bar-chart"></i> Bar Chart Example</div>
+                    <i class="fa fa-bar-chart"></i> Revenue Bar Chart (last 4 years)</div>
                   <div class="card-body">
                     <canvas id="myBarChart" width="100" height="50"></canvas>
                   </div>
-                  <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
                 </div>
               </div>
               <div class="col-lg-4">
                 <!-- Example Pie Chart Card-->
                 <div class="card mb-3">
                   <div class="card-header">
-                    <i class="fa fa-pie-chart"></i> Pie Chart Example</div>
+                    <i class="fa fa-pie-chart"></i> Project Distribution</div>
                   <div class="card-body">
                     <canvas id="myPieChart" width="100%" height="100"></canvas>
                   </div>
-                  <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
                 </div>
               </div>
             </div>
@@ -122,5 +110,118 @@
 @section('script')
 <!-- Custom scripts for this page-->
 <script src="{{ asset('template/js/sb-admin-datatables.min.js') }}"></script>
-<script src="{{ asset('template/js/sb-admin-charts.min.js') }}"></script>
+<script src="{{ asset('template/js/sb-admin-charts.js') }}"></script>
+
+<script>
+// -- Bar Chart Example
+var ctx = document.getElementById("myBarChart");
+var myLineChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: [{{ \Carbon\Carbon::now()->subMonths(0)->format('Y') }}, {{ \Carbon\Carbon::now()->subMonths(12)->format('Y') }}, {{ \Carbon\Carbon::now()->subMonths(24)->format('Y') }}, {{ \Carbon\Carbon::now()->subMonths(36)->format('Y') }}],
+    datasets: [{
+      label: "Revenue",
+      backgroundColor: "rgba(2,117,216,1)",
+      borderColor: "rgba(2,117,216,1)",
+      data: [{{ $year[1] }}, {{ $year[2] }}, {{ $year[3] }}, {{ $year[4] }}],
+    }],
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        time: {
+          unit: 'year'
+        },
+        gridLines: {
+          display: false
+        },
+        ticks: {
+          maxTicksLimit: 6
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          min: 0,
+          max: {{ $year['max'] }},
+          maxTicksLimit: 4
+        },
+        gridLines: {
+          display: true
+        }
+      }],
+    },
+    legend: {
+      display: false
+    }
+  }
+});
+</script>
+
+<script>
+// -- Area Chart Example
+var ctx = document.getElementById("myAreaChart");
+var myLineChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"],
+    datasets: [{
+      label: "Revenue",
+      lineTension: 0.3,
+      backgroundColor: "rgba(2,117,216,0.2)",
+      borderColor: "rgba(2,117,216,1)",
+      pointRadius: 5,
+      pointBackgroundColor: "rgba(2,117,216,1)",
+      pointBorderColor: "rgba(255,255,255,0.8)",
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: "rgba(2,117,216,1)",
+      pointHitRadius: 20,
+      pointBorderWidth: 2,
+      data: [{{ $rev[1] }}, {{ $rev[1] }}, {{ $rev[1] }}, {{ $rev[4] }}, {{ $rev[5] }}, {{ $rev[6] }}, {{ $rev[7] }}, {{ $rev[8] }}, {{ $rev[9] }}, {{ $rev[10] }}, {{ $rev[11] }}, {{ $rev[12] }}],
+    }],
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        time: {
+          unit: 'date'
+        },
+        gridLines: {
+          display: false
+        },
+        ticks: {
+          maxTicksLimit: 7
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          min: 0,
+          max: {{ $revenue }},
+          maxTicksLimit: 5
+        },
+        gridLines: {
+          color: "rgba(0, 0, 0, .125)",
+        }
+      }],
+    },
+    legend: {
+      display: false
+    }
+  }
+});
+</script>
+
+<script>
+// -- Pie Chart Example
+var ctx = document.getElementById("myPieChart");
+var myPieChart = new Chart(ctx, {
+  type: 'pie',
+  data: {
+    labels: ["Studi Kelayakan", "Riset Pasar", "Pelatihan", "Pengawasan"],
+    datasets: [{
+      data: [{{ $category['studi'] }}, {{ $category['riset'] }}, {{ $category['pelatihan'] }}, {{ $category['pengawasan'] }}],
+      backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745'],
+    }],
+  },
+});
+</script>
 @endsection

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Project;
 use App\TeamProject;
+use Carbon\Carbon;
 use DataTables;
 use Validator;
+use DB;
 
 class ProjectController extends Controller
 {
@@ -22,7 +24,31 @@ class ProjectController extends Controller
 
     public function table()
     {
-        $projects = Project::get();
+        if (isset($_GET['status'])) {
+          $status = $_GET['status'];
+
+          if ($status == 'running') {
+            $projects = DB::table('projects')
+              ->where('projects.selesai', '>=', Carbon::now()->format('Y-m-d'))
+              ->get();
+          } else if ($status == 'deadline') {
+            $projects = DB::table('projects')
+              ->select('projects.*')
+              ->where('projects.selesai', '<=', Carbon::now()->addDays(4)->format('Y-m-d'))
+              ->where('projects.selesai', '>=', Carbon::now()->format('Y-m-d'))
+              ->get();
+          } else if ($status == 'finish') {
+            $projects = DB::table('projects')
+              ->where('projects.selesai', '<', Carbon::now()->format('Y-m-d'))
+              ->get();
+          } else {
+            $projects = Project::get();
+          }
+
+        } else {
+          $projects = Project::get();
+        }
+
 
         return DataTables::of($projects)
           ->addColumn('team', function ($projects) {
@@ -31,8 +57,22 @@ class ProjectController extends Controller
 
             return $team->team;
           })
+          ->addColumn('category', function ($projects) {
+            if ($projects->category == 'studi_kelayakan') {
+              return 'Studi Kelayakan';
+            } else if ($projects->category == 'riset_pasar') {
+              return 'Riset Pasar';
+            } else if ($projects->category == 'pelatihan') {
+              return 'Pelatihan';
+            } else {
+              return 'Pengawasan';
+            }
+          })
           ->addColumn('fee', function ($projects) {
             return number_format($projects->fee, 2, ',', '.');
+          })
+          ->addColumn('pengeluaran', function ($projects) {
+            return number_format($projects->pengeluaran, 2, ',', '.');
           })
           ->addColumn('action', function ($projects) {
             return '
@@ -67,12 +107,14 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+          'category' => 'required',
           'project' => 'required',
           'team_array' => 'required',
           'lokasi' => 'required',
           'mulai' => 'required|date',
           'selesai' => 'required|date|after_or_equal:mulai',
           'fee' => 'required|integer',
+          'pengeluaran' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -81,12 +123,14 @@ class ProjectController extends Controller
           ]);
         } else {
           $project = new Project();
+          $project->category = $request->category;
           $project->project = $request->project;
           $project->lokasi = $request->lokasi;
           $project->keterangan = $request->keterangan;
           $project->mulai = $request->mulai;
           $project->selesai = $request->selesai;
           $project->fee = $request->fee;
+          $project->pengeluaran = $request->pengeluaran;
           $project->save();
 
           $team = new TeamProject();
@@ -146,12 +190,14 @@ class ProjectController extends Controller
     public function update(Request $request, $id)
     {
       $validator = Validator::make($request->all(), [
+        'category' => 'required',
         'project' => 'required',
         'team_array' => 'required',
         'lokasi' => 'required',
         'mulai' => 'required|date',
         'selesai' => 'required|date|after_or_equal:mulai',
         'fee' => 'required|integer',
+        'pengeluaran' => 'required|integer',
       ]);
 
       if ($validator->fails()) {
@@ -160,12 +206,14 @@ class ProjectController extends Controller
         ]);
       } else {
         $project = Project::find($id);
+        $project->category = $request->category;
         $project->project = $request->project;
         $project->lokasi = $request->lokasi;
         $project->keterangan = $request->keterangan;
         $project->mulai = $request->mulai;
         $project->selesai = $request->selesai;
         $project->fee = $request->fee;
+        $project->pengeluaran = $request->pengeluaran;
         $project->save();
 
         $team = TeamProject::where('id_project', '=', $id)

@@ -15,23 +15,27 @@ class CreateProjectsTable extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->increments('id');
+            $table->enum('category', ['studi_kelayakan', 'riset_pasar', 'pelatihan', 'pengawasan']);
             $table->string('project');
             $table->string('lokasi');
             $table->text('keterangan')->nullable();
             $table->date('mulai');
             $table->date('selesai');
             $table->integer('fee');
+            $table->integer('pengeluaran');
             $table->timestamps();
         });
 
         DB::table('projects')->insert([
           [
+            'category' => 'studi_kelayakan',
             'project' => 'Monitoring',
             'lokasi' => 'Jakarta',
             'keterangan' => 'Masih tahap 1',
             'mulai' => \Carbon\Carbon::now()->subDays(10),
             'selesai' => \Carbon\Carbon::now()->addDays(10),
             'fee' => 12000000,
+            'pengeluaran' => 1000000,
           ]
         ]);
     }

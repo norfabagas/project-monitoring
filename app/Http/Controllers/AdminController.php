@@ -48,7 +48,9 @@ class AdminController extends Controller
 
         // revenue counts
         $revenue = 0;
-        $total_projects = Project::get();
+        $total_projects = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->get();
         foreach ($total_projects as $a) {
           $revenue = $revenue + ($a->fee - $a->pengeluaran);
         }

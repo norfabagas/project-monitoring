@@ -28,14 +28,6 @@ class CreateTeamProjectsTable extends Migration
             'id_project' => '1',
             'team' => 'Ahmad',
           ],
-          [
-            'id_project' => '1',
-            'team' => 'Budianto'
-          ],
-          [
-            'id_project' => '1',
-            'team' => 'Shireen',
-          ]
         ]);
     }
 

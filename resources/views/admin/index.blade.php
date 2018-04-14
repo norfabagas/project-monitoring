@@ -13,9 +13,9 @@
         <div class="card-body-icon">
           <i class="fa fa-fw fa-comments"></i>
         </div>
-        <div class="mr-5">26 New Messages!</div>
+        <div class="mr-5">{{ $projects }} Total Projects</div>
       </div>
-      <a class="card-footer text-white clearfix small z-1" href="#">
+      <a class="card-footer text-white clearfix small z-1" href="{{ url('admin/project') }}">
         <span class="float-left">View Details</span>
         <span class="float-right">
           <i class="fa fa-angle-right"></i>
@@ -29,7 +29,7 @@
         <div class="card-body-icon">
           <i class="fa fa-fw fa-list"></i>
         </div>
-        <div class="mr-5">11 New Tasks!</div>
+        <div class="mr-5">{{ $running }} Project berjalan</div>
       </div>
       <a class="card-footer text-white clearfix small z-1" href="#">
         <span class="float-left">View Details</span>
@@ -45,7 +45,7 @@
         <div class="card-body-icon">
           <i class="fa fa-fw fa-shopping-cart"></i>
         </div>
-        <div class="mr-5">123 New Orders!</div>
+        <div class="mr-5">{{ $finish }} Projects Selesai</div>
       </div>
       <a class="card-footer text-white clearfix small z-1" href="#">
         <span class="float-left">View Details</span>
@@ -61,7 +61,7 @@
         <div class="card-body-icon">
           <i class="fa fa-fw fa-support"></i>
         </div>
-        <div class="mr-5">13 New Tickets!</div>
+        <div class="mr-5">{{ $deadline }} Projects mendekati deadline</div>
       </div>
       <a class="card-footer text-white clearfix small z-1" href="#">
         <span class="float-left">View Details</span>

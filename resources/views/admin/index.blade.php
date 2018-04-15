@@ -131,7 +131,7 @@ var myLineChart = new Chart(ctx, {
       label: "Revenue",
       backgroundColor: "rgba(2,117,216,1)",
       borderColor: "rgba(2,117,216,1)",
-      data: [{{ $rev[1] }}, {{ $rev[1] }}, {{ $rev[1] }}, {{ $rev[4] }}, {{ $rev[5] }}, {{ $rev[6] }}, {{ $rev[7] }}, {{ $rev[8] }}, {{ $rev[9] }}, {{ $rev[10] }}, {{ $rev[11] }}, {{ $rev[12] }}],
+      data: [{{ $rev[1] }}, {{ $rev[2] }}, {{ $rev[3] }}, {{ $rev[4] }}, {{ $rev[5] }}, {{ $rev[6] }}, {{ $rev[7] }}, {{ $rev[8] }}, {{ $rev[9] }}, {{ $rev[10] }}, {{ $rev[11] }}, {{ $rev[12] }}],
     }],
   },
   options: {

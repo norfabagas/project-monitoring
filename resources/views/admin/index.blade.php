@@ -76,9 +76,17 @@
 <!-- Area Chart Example-->
 <div class="card mb-3">
   <div class="card-header">
-    <i class="fa fa-area-chart"></i> Revenue Area Chart {{ date('Y') }}</div>
+    <i class="fa fa-area-chart"></i> Omset tahun {{ date('Y') }}</div>
   <div class="card-body">
     <canvas id="myAreaChart" width="100%" height="30"></canvas>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header">
+    <i class="fa fa-area-chart"></i> Pengeluaran tahun {{ date('Y') }}</div>
+  <div class="card-body">
+    <canvas id="myAreaChart2" width="100%" height="30"></canvas>
   </div>
 </div>
 
@@ -88,7 +96,7 @@
                 <!-- Example Bar Chart Card-->
                 <div class="card mb-3">
                   <div class="card-header">
-                    <i class="fa fa-bar-chart"></i> Revenue Bar Chart (last 4 years)</div>
+                    <i class="fa fa-bar-chart"></i> Grafik Keuntungan {{ date('Y') }}</div>
                   <div class="card-body">
                     <canvas id="myBarChart" width="100" height="50"></canvas>
                   </div>
@@ -118,12 +126,12 @@ var ctx = document.getElementById("myBarChart");
 var myLineChart = new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: [{{ \Carbon\Carbon::now()->subMonths(0)->format('Y') }}, {{ \Carbon\Carbon::now()->subMonths(12)->format('Y') }}, {{ \Carbon\Carbon::now()->subMonths(24)->format('Y') }}, {{ \Carbon\Carbon::now()->subMonths(36)->format('Y') }}],
+    labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
     datasets: [{
       label: "Revenue",
       backgroundColor: "rgba(2,117,216,1)",
       borderColor: "rgba(2,117,216,1)",
-      data: [{{ $year[1] }}, {{ $year[2] }}, {{ $year[3] }}, {{ $year[4] }}],
+      data: [{{ $rev[1] }}, {{ $rev[1] }}, {{ $rev[1] }}, {{ $rev[4] }}, {{ $rev[5] }}, {{ $rev[6] }}, {{ $rev[7] }}, {{ $rev[8] }}, {{ $rev[9] }}, {{ $rev[10] }}, {{ $rev[11] }}, {{ $rev[12] }}],
     }],
   },
   options: {
@@ -142,7 +150,7 @@ var myLineChart = new Chart(ctx, {
       yAxes: [{
         ticks: {
           min: 0,
-          max: {{ $year['max'] }},
+          max: {{ $revenue }},
           maxTicksLimit: 4
         },
         gridLines: {
@@ -176,7 +184,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBackgroundColor: "rgba(2,117,216,1)",
       pointHitRadius: 20,
       pointBorderWidth: 2,
-      data: [{{ $rev[1] }}, {{ $rev[1] }}, {{ $rev[1] }}, {{ $rev[4] }}, {{ $rev[5] }}, {{ $rev[6] }}, {{ $rev[7] }}, {{ $rev[8] }}, {{ $rev[9] }}, {{ $rev[10] }}, {{ $rev[11] }}, {{ $rev[12] }}],
+      data: [{{ $o[1] }}, {{ $o[2] }}, {{ $o[3] }}, {{ $o[4] }}, {{ $o[5] }}, {{ $o[6] }}, {{ $o[7] }}, {{ $o[8] }}, {{ $o[9] }}, {{ $o[10] }}, {{ $o[11] }}, {{ $o[12] }}],
     }],
   },
   options: {
@@ -195,7 +203,60 @@ var myLineChart = new Chart(ctx, {
       yAxes: [{
         ticks: {
           min: 0,
-          max: {{ $revenue }},
+          max: {{ $omset }},
+          maxTicksLimit: 5
+        },
+        gridLines: {
+          color: "rgba(0, 0, 0, .125)",
+        }
+      }],
+    },
+    legend: {
+      display: false
+    }
+  }
+});
+</script>
+
+<script>
+// -- Area Chart Example
+var ctx = document.getElementById("myAreaChart2");
+var myLineChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"],
+    datasets: [{
+      label: "Revenue",
+      lineTension: 0.3,
+      backgroundColor: "rgba(2,117,216,0.2)",
+      borderColor: "rgba(2,117,216,1)",
+      pointRadius: 5,
+      pointBackgroundColor: "rgba(2,117,216,1)",
+      pointBorderColor: "rgba(255,255,255,0.8)",
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: "rgba(2,117,216,1)",
+      pointHitRadius: 20,
+      pointBorderWidth: 2,
+      data: [{{ $p[1] }}, {{ $p[2] }}, {{ $p[3] }}, {{ $p[4] }}, {{ $p[5] }}, {{ $p[6] }}, {{ $p[7] }}, {{ $p[8] }}, {{ $p[9] }}, {{ $p[10] }}, {{ $p[11] }}, {{ $p[12] }}],
+    }],
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        time: {
+          unit: 'date'
+        },
+        gridLines: {
+          display: false
+        },
+        ticks: {
+          maxTicksLimit: 7
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          min: 0,
+          max: {{ $pengeluaran }},
           maxTicksLimit: 5
         },
         gridLines: {

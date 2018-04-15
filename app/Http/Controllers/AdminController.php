@@ -163,46 +163,241 @@ class AdminController extends Controller
           $rev[12] = $rev[12] + ($a->fee - $a->pengeluaran);
         }
 
-        $year = [];
-
-        $year[1] = 0;
-        $year['one'] = DB::table('projects')
+        // omset counts
+        $omset = 0;
+        $total_projects = DB::table('projects')
           ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
           ->get();
-        foreach ($year['one'] as $a) {
-          $year[1] = $year[1] + ($a->fee - $a->pengeluaran);
+        foreach ($total_projects as $a) {
+          $omset = $omset + $a->fee;
         }
 
-        $year[2] = 0;
-        $year['two'] = DB::table('projects')
-          ->whereYear('projects.selesai', '=', Carbon::now()->subMonths(12)->format('Y'))
+        $o[1] = 0;
+        $o['jan'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '1')
           ->get();
-        foreach ($year['two'] as $a) {
-          $year[2] = $year[2] + ($a->fee - $a->pengeluaran);
+        foreach ($o['jan'] as $a) {
+          $o[1] = $o[1] + $a->fee;
         }
 
-        $year[3] = 0;
-        $year['three'] = DB::table('projects')
-          ->whereYear('projects.selesai', '=', Carbon::now()->subMonths(24)->format('Y'))
+        $o[2] = 0;
+        $o['feb'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '2')
           ->get();
-        foreach ($year['three'] as $a) {
-          $year[3] = $year[3] + ($a->fee - $a->pengeluaran);
+        foreach ($o['feb'] as $a) {
+          $o[2] = $o[2] + $a->fee;
         }
 
-        $year[4] = 0;
-        $year['four'] = DB::table('projects')
-          ->whereYear('projects.selesai', '=', Carbon::now()->subMonths(36)->format('Y'))
+        $o[3] = 0;
+        $o['mar'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '3')
           ->get();
-        foreach ($year['four'] as $a) {
-          $year[4] = $year[4] + ($a->fee - $a->pengeluaran);
+        foreach ($o['jan'] as $a) {
+          $o[3] = $o[3] + $a->fee;
         }
 
-        $year['max'] = 0;
-        for ($i = 1; $i <=4; $i++) {
-          if ($year[$i] >= $year['max']) {
-            $year['max'] = $year[$i];
-          }
+        $o[4] = 0;
+        $o['apr'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '4')
+          ->get();
+        foreach ($o['apr'] as $a) {
+          $o[4] = $o[4] + $a->fee;
         }
+
+        $o[5] = 0;
+        $o['may'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '5')
+          ->get();
+        foreach ($o['may'] as $a) {
+          $o[5] = $o[5] + $a->fee;
+        }
+
+        $o[6] = 0;
+        $o['jun'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '6')
+          ->get();
+        foreach ($o['jun'] as $a) {
+          $o[6] = $o[6] + $a->fee;
+        }
+
+        $o[7] = 0;
+        $o['jul'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '7')
+          ->get();
+          foreach ($o['jul'] as $a) {
+          $o[7] = $o[7] + $a->fee;
+        }
+
+        $o[8] = 0;
+        $o['aug'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '8')
+          ->get();
+          foreach ($o['jul'] as $a) {
+          $o[8] = $o[8] + $a->fee;
+        }
+
+        $o[9] = 0;
+        $o['sep'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '9')
+          ->get();
+          foreach ($o['jul'] as $a) {
+          $o[9] = $o[9] + $a->fee;
+        }
+
+        $o[10] = 0;
+        $o['oct'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '10')
+          ->get();
+          foreach ($o['jul'] as $a) {
+          $o[10] = $o[10] + $a->fee;
+        }
+
+        $o[11] = 0;
+        $o['nov'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '11')
+          ->get();
+          foreach ($o['jul'] as $a) {
+          $o[11] = $o[11] + $a->fee;
+        }
+
+        $o[12] = 0;
+        $o['dec'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '12')
+          ->get();
+          foreach ($o['dec'] as $a) {
+          $o[12] = $o[12] + $a->fee;
+        }
+
+        // pengeluaran counts
+        $pengeluaran = 0;
+        $total_projects = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->get();
+        foreach ($total_projects as $a) {
+          $pengeluaran = $pengeluaran + $a->pengeluaran;
+        }
+
+        $p[1] = 0;
+        $p['jan'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '1')
+          ->get();
+        foreach ($p['jan'] as $a) {
+          $p[1] = $p[1] + $a->pengeluaran;
+        }
+
+        $p[2] = 0;
+        $p['feb'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '2')
+          ->get();
+        foreach ($p['feb'] as $a) {
+          $p[2] = $p[2] + $a->pengeluaran;
+        }
+
+        $p[3] = 0;
+        $p['mar'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '3')
+          ->get();
+        foreach ($p['jan'] as $a) {
+          $p[3] = $p[3] + $a->pengeluaran;
+        }
+
+        $p[4] = 0;
+        $p['apr'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '4')
+          ->get();
+        foreach ($p['apr'] as $a) {
+          $p[4] = $p[4] + $a->pengeluaran;
+        }
+
+        $p[5] = 0;
+        $p['may'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '5')
+          ->get();
+        foreach ($p['may'] as $a) {
+          $p[5] = $p[5] + $a->pengeluaran;
+        }
+
+        $p[6] = 0;
+        $p['jun'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '6')
+          ->get();
+        foreach ($p['jun'] as $a) {
+          $p[6] = $p[6] + $a->pengeluaran;
+        }
+
+        $p[7] = 0;
+        $p['jul'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '7')
+          ->get();
+          foreach ($p['jul'] as $a) {
+          $p[7] = $p[7] + $a->pengeluaran;
+        }
+
+        $p[8] = 0;
+        $p['aug'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '8')
+          ->get();
+          foreach ($p['jul'] as $a) {
+          $p[8] = $p[8] + $a->pengeluaran;
+        }
+
+        $p[9] = 0;
+        $p['sep'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '9')
+          ->get();
+          foreach ($p['jul'] as $a) {
+          $p[9] = $p[9] + $a->pengeluaran;
+        }
+
+        $p[10] = 0;
+        $p['oct'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '10')
+          ->get();
+          foreach ($p['jul'] as $a) {
+          $p[10] = $p[10] + $a->pengeluaran;
+        }
+
+        $p[11] = 0;
+        $p['nov'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '11')
+          ->get();
+          foreach ($p['jul'] as $a) {
+          $p[11] = $p[11] + $a->pengeluaran;
+        }
+
+        $p[12] = 0;
+        $p['dec'] = DB::table('projects')
+          ->whereYear('projects.selesai', '=', Carbon::now()->format('Y'))
+          ->whereMonth('projects.selesai', '<=', '12')
+          ->get();
+          foreach ($p['dec'] as $a) {
+          $p[12] = $p[12] + $a->pengeluaran;
+        }
+
+
 
         return view('admin.index')
           ->with('projects', $projects)
@@ -212,7 +407,10 @@ class AdminController extends Controller
           ->with('category', $category)
           ->with('revenue', $revenue)
           ->with('rev', $rev)
-          ->with('year', $year);
+          ->with('omset', $omset)
+          ->with('o', $o)
+          ->with('pengeluaran', $pengeluaran)
+          ->with('p', $p);
     }
 
     public function project()

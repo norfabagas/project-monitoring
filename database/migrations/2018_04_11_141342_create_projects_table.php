@@ -17,7 +17,7 @@ class CreateProjectsTable extends Migration
             $table->increments('id');
             $table->enum('category', ['studi_kelayakan', 'riset_pasar', 'pelatihan', 'pengawasan']);
             $table->string('project');
-            $table->string('lokasi');
+            $table->text('lokasi');
             $table->text('keterangan')->nullable();
             $table->date('mulai');
             $table->date('selesai');

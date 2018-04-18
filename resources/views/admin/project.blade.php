@@ -86,9 +86,18 @@
 
           <div class="form-group">
             <label>Lokasi Project</label>
+            <input type="text" class="form-control" id="addLokasi">
+            <input type="hidden" name="team_array" id="addLokasiArray" value="">
+            <button class="btn btn-info btn-sm" id="addLokasiBtn"><i class="fa fa-plus"></i> Add</button>
+            <ul id="addLokasiList">
+            </ul>
+          </div>
+
+          <!-- <div class="form-group">
+            <label>Lokasi Project</label>
             <input type="text" name="lokasi" class="form-control" id="addProjectLokasi">
             <p class="invalid-feedback add-lokasi"></p>
-          </div>
+          </div> -->
 
           <div class="form-group">
             <label>Keterangan Project</label>
@@ -186,9 +195,18 @@
 
           <div class="form-group">
             <label>Lokasi Project</label>
+            <input type="text" class="form-control" id="editLokasi">
+            <input type="hidden" name="lokasi_array" id="editLokasiArray" value="">
+            <button class="btn btn-info btn-sm" id="editLokasiBtn"><i class="fa fa-plus"></i> Add</button>
+            <ul id="editLokasiList">
+            </ul>
+          </div>
+
+          <!-- <div class="form-group">
+            <label>Lokasi Project</label>
             <input type="text" name="lokasi" class="form-control" id="editProjectLokasi">
             <p class="invalid-feedback edit-lokasi"></p>
-          </div>
+          </div> -->
 
           <div class="form-group">
             <label>Keterangan Project</label>
@@ -298,6 +316,7 @@ $(document).ready(function () {
     $('.invalid-feedback.add-pengeluaran').empty();
   });
 
+  // dynamic team
   $('#addTeamBtn').on('click', function (event) {
     event.preventDefault();
     if ($('#addTeam').val() !== '') {
@@ -324,6 +343,33 @@ $(document).ready(function () {
 
   });
 
+  // dynamic location
+  $('#addLokasiBtn').on('click', function (event) {
+    event.preventDefault();
+    if ($('#addLokasi').val() !== '') {
+      $('#addLokasiList').append('<li>'+$('#addLokasi').val()+' <button class="btn btn-danger delete-item"><i class="fa fa-trash"></i></button></li>');
+    }
+  });
+
+  $('#editLokasiBtn').on('click', function (event) {
+    event.preventDefault();
+    if ($('#editLokasi').val() !== '') {
+      $('#editLokasiList').append('<li>'+$('#editLokasi').val()+' <button class="btn btn-danger delete-item"><i class="fa fa-trash"></i></button></li>');
+    }
+  });
+
+  $('#addLokasiList').on('click', '.delete-item', function (e) {
+    var item = this;
+    deleteItem(e, item);
+
+  });
+
+  $('#editLokasiList').on('click', '.delete-item', function (e) {
+    var item = this;
+    deleteItem(e, item);
+
+  });
+
   $('#addForm').on('submit', function () {
     event.preventDefault();
 
@@ -334,6 +380,13 @@ $(document).ready(function () {
     });
     $('#addTeamArray').val(team);
 
+    var lokasi = [];
+    $('#addLokasiList > li').each(function () {
+      var list = $(this);
+      lokasi.push($(this).text());
+    });
+    $('#addLokasiArray').val(lokasi);
+
     $.ajax({
       url: "{{ url('admin/project-rest') }}",
       type: 'POST',
@@ -343,7 +396,7 @@ $(document).ready(function () {
         category: $('#addProjectCat').val(),
         project: $('#addProjectName').val(),
         team_array: $('#addTeamArray').val(),
-        lokasi: $('#addProjectLokasi').val(),
+        lokasi: $('#addLokasiArray').val(),
         keterangan: $('#addProjectKeterangan').val(),
         mulai: $('#addProjectMulai').val(),
         selesai: $('#addProjectSelesai').val(),
@@ -368,6 +421,12 @@ $(document).ready(function () {
             $('#addTeam').removeClass('is-invalid');
           }
 
+          if (data.errors.lokasi) {
+            $('#addLokasi').addClass('is-invalid');
+          } else {
+            $('#addLokasi').removeClass('is-invalid');
+          }
+
           if (data.errors.project) {
             $('#addProjectName').addClass('is-invalid');
             $('.invalid-feedback.add-project').text(data.errors.project);
@@ -376,13 +435,13 @@ $(document).ready(function () {
             $('.invalid-feedback.add-project').empty();
           }
 
-          if (data.errors.lokasi) {
-            $('#addProjectLokasi').addClass('is-invalid');
-            $('.invalid-feedback.add-lokasi').text(data.errors.lokasi);
-          } else {
-            $('#addProjectLokasi').removeClass('is-invalid');
-            $('.invalid-feedback.add-lokasi').empty();
-          }
+          // if (data.errors.lokasi) {
+          //   $('#addProjectLokasi').addClass('is-invalid');
+          //   $('.invalid-feedback.add-lokasi').text(data.errors.lokasi);
+          // } else {
+          //   $('#addProjectLokasi').removeClass('is-invalid');
+          //   $('.invalid-feedback.add-lokasi').empty();
+          // }
 
           if (data.errors.mulai) {
             $('#addProjectMulai').addClass('is-invalid');
@@ -440,7 +499,7 @@ $(document).ready(function () {
         $('#editID').val(data.project.id);
         $('#editProjectCat').val(data.project.category);
         $('#editProjectName').val(data.project.project);
-        $('#editProjectLokasi').val(data.project.lokasi);
+        // $('#editProjectLokasi').val(data.project.lokasi);
         $('#editProjectKeterangan').val(data.project.keterangan);
         $('#editProjectMulai').val(data.project.mulai);
         $('#editProjectSelesai').val(data.project.selesai);
@@ -448,6 +507,7 @@ $(document).ready(function () {
         $('#editProjectPengeluaran').val(data.project.pengeluaran);
 
         $('#editTeamList').html(data.team);
+        $('#editLokasiList').html(data.lokasi);
       }
     })
   })
@@ -462,6 +522,13 @@ $(document).ready(function () {
     });
     $('#editTeamArray').val(team);
 
+    var lokasi = [];
+    $('#editLokasiList > li').each(function () {
+      var list = $(this);
+      lokasi.push($(this).text());
+    });
+    $('#editLokasiArray').val(lokasi);
+
     $.ajax({
       url: "{{ url('admin/project-rest') }}/" + $('#editID').val(),
       type: 'PUT',
@@ -472,7 +539,7 @@ $(document).ready(function () {
         category: $('#editProjectCat').val(),
         team_array: $('#editTeamArray').val(),
         project: $('#editProjectName').val(),
-        lokasi: $('#editProjectLokasi').val(),
+        lokasi: $('#editLokasiArray').val(),
         keterangan: $('#editProjectKeterangan').val(),
         mulai: $('#editProjectMulai').val(),
         selesai: $('#editProjectSelesai').val(),
@@ -497,6 +564,12 @@ $(document).ready(function () {
             $('#editTeam').removeClass('is-invalid');
           }
 
+          if (data.errors.lokasi) {
+            $('#editLokasi').addClass('is-invalid');
+          } else {
+            $('#editLokasi').removeClass('is-invalid');
+          }
+
           if (data.errors.project) {
             $('#editProjectName').addClass('is-invalid');
             $('.invalid-feedback.edit-project').text(data.errors.project);
@@ -505,13 +578,13 @@ $(document).ready(function () {
             $('.invalid-feedback.edit-project').empty();
           }
 
-          if (data.errors.lokasi) {
-            $('#editProjectLokasi').addClass('is-invalid');
-            $('.invalid-feedback.edit-lokasi').text(data.errors.lokasi);
-          } else {
-            $('#editProjectLokasi').removeClass('is-invalid');
-            $('.invalid-feedback.edit-lokasi').empty();
-          }
+          // if (data.errors.lokasi) {
+          //   $('#editProjectLokasi').addClass('is-invalid');
+          //   $('.invalid-feedback.edit-lokasi').text(data.errors.lokasi);
+          // } else {
+          //   $('#editProjectLokasi').removeClass('is-invalid');
+          //   $('.invalid-feedback.edit-lokasi').empty();
+          // }
 
           if (data.errors.mulai) {
             $('#editProjectMulai').addClass('is-invalid');

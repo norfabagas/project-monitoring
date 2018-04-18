@@ -174,9 +174,17 @@ class ProjectController extends Controller
           $teamProject = $teamProject . '<li>' . $a . ' <button class="btn btn-danger delete-item"><i class="fa fa-trash"></i></button> </li>';
         }
 
+        $lokasiProject = '';
+        $arrayLokasi = explode(',', $project->lokasi);
+        foreach($arrayLokasi as $a) {
+
+          $lokasiProject = $lokasiProject . '<li>' . $a . ' <button class="btn btn-danger delete-item"><i class="fa fa-trash"></i></button> </li>';
+        }
+
         return response()->json([
           'project' => $project,
           'team' => $teamProject,
+          'lokasi' => $lokasiProject,
         ]);
     }
 
